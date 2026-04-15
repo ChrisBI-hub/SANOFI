@@ -1,0 +1,6 @@
+sanofi/
+__pycache__/
+*.pyc
+*.pkg
+dist/
+build/
