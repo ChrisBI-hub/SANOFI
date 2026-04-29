@@ -33,7 +33,7 @@ MEJORA ADICIONAL — Normalización de columnas
   preparar_datos() y búsqueda flexible de columnas clave.
 
 ═══════════════════════════════════════════════════════════════
-
+21% vecnidos
 Uso:
     python reporte_bimestral.py
 
@@ -44,14 +44,12 @@ Dependencias:
 import os
 import sys
 import traceback
-import urllib.parse
 
 import pandas as pd
 from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.util import Pt
 from datetime import datetime
-from sqlalchemy import create_engine, text
 
 # ================================================================
 #  CONFIGURACIÓN — EDITAR AQUÍ CADA BIMESTRE
@@ -151,8 +149,20 @@ def leer_query() -> str:
             f"No se encontró el archivo SQL en:\n  {SQL_PATH}\n"
             "Verifica que esté en la misma carpeta que este script."
         )
-    with open(SQL_PATH, encoding="latin-1") as f:
-        query = f.read()
+    try:
+        with open(SQL_PATH, encoding="utf-8-sig") as f:
+            query = f.read()
+    except UnicodeDecodeError:
+        with open(SQL_PATH, encoding="latin-1") as f:
+            query = f.read()
+
+    # Evita caracteres invisibles que SQL Server interpreta como tokens.
+    query = (
+        query
+        .replace("\xad", "")
+        .replace("\ufeff", "")
+        .replace("\u200b", "")
+    )
 
     meses  = BIMESTRE["meses"]
     anno   = BIMESTRE["anno"]
@@ -171,14 +181,13 @@ def obtener_datos() -> pd.DataFrame:
     """Conecta a SQL Server, ejecuta la query y retorna un DataFrame."""
     print("  Conectando a SQL Server...")
     try:
-        params = urllib.parse.quote_plus(CONN_STRING)
-        engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
+        import pyodbc
 
         print("  Ejecutando query (puede tardar unos segundos)...")
         query = leer_query()
 
-        with engine.connect() as conn:
-            df = pd.read_sql(text(query), conn)
+        with pyodbc.connect(CONN_STRING, timeout=30) as conn:
+            df = pd.read_sql_query(query, conn)
     except ModuleNotFoundError as e:
         if e.name == "pyodbc":
             raise ConnectionError(
