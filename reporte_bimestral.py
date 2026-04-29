@@ -47,7 +47,6 @@ import traceback
 import urllib.parse
 
 import pandas as pd
-import pyodbc
 from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.util import Pt
@@ -93,6 +92,10 @@ PPTX_OUT  = os.path.join(
     f"ABC_OPERACIONES_SANOFI_{BIMESTRE['mes1_nombre'].upper()}_"
     f"{BIMESTRE['mes2_nombre'].upper()}_{BIMESTRE['anno']}.pptx"
 )
+
+# Solo estas diapositivas reciben datos/graficas desde la BD.
+# El resto se conserva desde la plantilla y solo se actualiza el periodo.
+SLIDES_DESDE_BD = (3, 8, 9, 10, 11)
 
 # ── Mapeos de negocio ────────────────────────────────────────────
 CLIENTE_AVENTIS = "SANOFI - AVENTIS DE MEXICO, S.A. DE C.V."
@@ -149,11 +152,11 @@ def leer_query() -> str:
             "Verifica que esté en la misma carpeta que este script."
         )
     with open(SQL_PATH, encoding="latin-1") as f:
-        return f.read()
-    
+        query = f.read()
+
     meses  = BIMESTRE["meses"]
     anno   = BIMESTRE["anno"]
-    fecha_fin = f"{anno}-{meses[0]:02d}-01"
+    fecha_ini = f"{anno}-{meses[0]:02d}-01"
     # Ultimo dia del mes 2
     import calendar
     ultimo_dia = calendar.monthrange(anno, meses[1])[1]
@@ -170,14 +173,28 @@ def obtener_datos() -> pd.DataFrame:
     try:
         params = urllib.parse.quote_plus(CONN_STRING)
         engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
-    except Exception as e:
-        raise ConnectionError(f"No se pudo conectar.\nDetalle: {e}")
 
-    print("  Ejecutando query (puede tardar unos segundos)...")
-    query = leer_query()
-    
-    with engine.connect() as conn:
-        df    = pd.read_sql(text(query), conn)
+        print("  Ejecutando query (puede tardar unos segundos)...")
+        query = leer_query()
+
+        with engine.connect() as conn:
+            df = pd.read_sql(text(query), conn)
+    except ModuleNotFoundError as e:
+        if e.name == "pyodbc":
+            raise ConnectionError(
+                "Falta la dependencia pyodbc en este Python.\n"
+                "Ejecuta el reporte con el entorno del proyecto:\n"
+                "  sanofi/bin/python reporte_bimestral.py"
+            ) from e
+        raise
+    except Exception as e:
+        raise ConnectionError(
+            "No se pudo obtener informacion de SQL Server.\n"
+            f"Servidor configurado: {server}\n"
+            "Verifica que estes conectado a la red/VPN y que el puerto SQL Server "
+            "este disponible.\n"
+            f"Detalle tecnico: {e}"
+        ) from e
 
     print(f"  → {len(df):,} registros obtenidos, {len(df.columns)} columnas")
     print(f"  → Columnas: {list(df.columns)}")   # diagnóstico: imprime columnas reales
@@ -247,9 +264,11 @@ def calcular_kpis(df: pd.DataFrame) -> dict:
     col_suc   = resolver_columna(df, ["Sucursal", "SUCURSAL"])
     col_ref   = resolver_columna(df, ["Referencia", "REFERENCIA"])
     col_fam   = resolver_columna(df, ["FAMILIA", "Familia", "familia"])
-    # ── BUG FIX: usar "Mercancía" consistentemente ──────────────
+    # Mercancia solo se conserva como dato auxiliar; las slides 5-7 ya no
+    # se alimentan desde BD porque dependen de informacion externa del cliente.
     col_merc  = resolver_columna(df, ["Mercancía", "Mercancia", "MERCANCIA", "DESCRIPCIÓN_PRODUCTO",
-                                      "Descripcion_Producto", "DESCRIPCION_PRODUCTO"])
+                                      "Descripcion_Producto", "DESCRIPCION_PRODUCTO"],
+                                 obligatoria=False)
     col_ec    = resolver_columna(df, ["Entrada a Cruce", "EntradaCruce", "ENTRADA_A_CRUCE"],
                                  obligatoria=False)
     col_fac   = resolver_columna(df, ["Entrada a Factura", "EntradaFactura", "ENTRADA_A_FACTURA"],
@@ -280,56 +299,13 @@ def calcular_kpis(df: pd.DataFrame) -> dict:
         for orig, corto in SUCURSAL_MAP.items()
     }
 
-    # ── Slide 4: On Time % ─────────────────────────────────────
-    def pct_ontime(grp):
-        if len(grp) == 0:
-            return None
-        return round((grp["ESTATUS"] == "ON TIME").sum() / len(grp) * 100)
-
-    # BUG FIX: include_groups=False para compatibilidad pandas ≥ 2.2
-    kpis["ontime_general"] = df.groupby("MES").apply(pct_ontime, include_groups=False)
-    kpis["ontime_aduana"]  = (
-        df.groupby([col_suc, "MES"])
-        .apply(pct_ontime, include_groups=False)
-        .unstack()
-    )
-
-    # ── Slides 5-8: Delayed ────────────────────────────────────
+    # ── Slide 8: Motivos delayed ───────────────────────────────
     df_delayed = df[df["ESTATUS"] == "DELAYED"].copy()
 
-    # BUG FIX: agrupar por col_merc (nombre real de la BD) y guardar con ese nombre
-    kpis["delayed_aifa"] = (
-        df_delayed[df_delayed[col_suc] == "AIFA ESTADO DE MEXICO"]
-        .groupby(["MES", col_fam, col_merc])[col_ref]
-        .count()
-        .reset_index(name="CANTIDAD")
-    )
-    kpis["delayed_veracruz"] = (
-        df_delayed[df_delayed[col_suc] == "VERACRUZ"]
-        .groupby(["MES", col_fam, col_merc])[col_ref]
-        .count()
-        .reset_index(name="CANTIDAD")
-    )
-
-    # Guardar los nombres reales de columna para usarlos en las funciones de slide
+    # Guardar nombres reales de columna para compatibilidad con helpers antiguos.
     kpis["_col_fam"]  = col_fam
-    kpis["_col_merc"] = col_merc   # ← clave: nombre real de mercancía en la BD
+    kpis["_col_merc"] = col_merc
 
-    # Referencias detalladas slides 6-7
-    cols_ref_list = ["MES", col_ref, col_merc, col_suc]
-    if col_mot:
-        cols_ref_list.append(col_mot)
-
-    kpis["refs_aifa"] = (
-        df_delayed[df_delayed[col_suc] == "AIFA ESTADO DE MEXICO"]
-        [cols_ref_list].sort_values("MES").to_dict("records")
-    )
-    kpis["refs_veracruz"] = (
-        df_delayed[df_delayed[col_suc] == "VERACRUZ"]
-        [cols_ref_list].sort_values("MES").to_dict("records")
-    )
-
-    # Tabla motivos slide 8
     col_imp = "IMPUTABLE A"
     if col_imp not in df_delayed.columns:
         df_delayed[col_imp] = "CLIENTE"
@@ -368,10 +344,6 @@ def calcular_kpis(df: pd.DataFrame) -> dict:
     kpis["facturacion_razon"]    = avg_pivot(df, col_fac, "RAZON_SOCIAL")
     kpis["facturacion_aduana"]   = avg_pivot(df, col_fac, col_suc)
 
-    # Slide 12: Estado de cuenta
-    kpis["pct_corriente"] = 0.01  # ⚠ Reemplazar con dato real de tu BD
-    kpis["pct_vencido"]   = 0.99
-
     return kpis
 
 
@@ -394,10 +366,44 @@ def replace_text_slide(slide, reemplazos: dict):
         if not shape.has_text_frame:
             continue
         for para in shape.text_frame.paragraphs:
+            texto_completo = "".join(run.text for run in para.runs)
+            texto_nuevo = texto_completo
+            for buscar, nuevo in reemplazos.items():
+                texto_nuevo = texto_nuevo.replace(buscar, str(nuevo))
+
+            # PowerPoint a veces parte una frase en varios runs. Si el
+            # reemplazo completo cambia el parrafo, lo reescribimos completo.
+            if texto_completo and texto_nuevo != texto_completo:
+                para.clear()
+                run = para.add_run()
+                run.text = texto_nuevo
+                continue
+
             for run in para.runs:
                 for buscar, nuevo in reemplazos.items():
                     if buscar in run.text:
                         run.text = run.text.replace(buscar, str(nuevo))
+
+
+def actualizar_periodo_presentacion(prs: Presentation, cfg: dict):
+    """Actualiza textos de periodo en toda la plantilla sin tocar graficas."""
+    periodo_largo = f"{cfg['mes1_nombre']} - {cfg['mes2_nombre']}"
+    periodo_largo_mayus = periodo_largo.upper()
+    reemplazos = {
+        cfg["label_portada_anterior"]: cfg["label_portada"],
+        "Enero– Febrero 2026": cfg["label_portada"],
+        "Enero–Febrero 2026": cfg["label_portada"],
+        "Enero - Febrero": periodo_largo,
+        "ENERO - FEBRERO": periodo_largo_mayus,
+        "Enero": cfg["mes1_nombre"],
+        "Febrero": cfg["mes2_nombre"],
+        "ENERO": cfg["mes1_nombre"].upper(),
+        "FEBRERO": cfg["mes2_nombre"].upper(),
+        "Periodo: Marzo": f"Periodo: {periodo_largo}",
+    }
+
+    for slide in prs.slides:
+        replace_text_slide(slide, reemplazos)
 
 
 def set_table_cell(tabla, fila, col, valor, bold=False):
@@ -661,7 +667,7 @@ def slide8_motivos_tabla(slide, kpis: dict, cfg: dict):
 
 def slide9_rectificaciones(slide, kpis: dict, cfg: dict):
     total   = kpis["total_rectificaciones"]
-    periodo = cfg["mes1_nombre"]
+    periodo = f"{cfg['mes1_nombre']} - {cfg['mes2_nombre']}"
 
     for shape in slide.shapes:
         if shape.has_text_frame:
@@ -770,7 +776,7 @@ def main():
     df   = preparar_datos(df_raw, BIMESTRE["meses"], BIMESTRE["anno"])
     kpis = calcular_kpis(df)
     print(f"  → Registros en bimestre: {len(df):,}")
-    print(f"  → On Time general:       {kpis['ontime_general'].to_dict()}")
+    print(f"  → Slides con datos BD:   {', '.join(map(str, SLIDES_DESDE_BD))}")
 
     # ── Paso 3: Abrir plantilla y actualizar slides ─────────────
     print(f"\n[3/4] Actualizando presentación...")
@@ -785,18 +791,18 @@ def main():
     print(f"  Slides en la plantilla: {len(slides)}")
     print("\n  Slides dinámicos:")
 
-    # Cada slide usa _safe_slide para no abortar si una falla
+    # Cada slide usa _safe_slide para no abortar si una falla.
+    # Las slides no listadas en SLIDES_DESDE_BD se conservan como plantilla.
     _safe_slide("Slide 1",  slide1_portada,        slides[0],  BIMESTRE)
     _safe_slide("Slide 3",  slide3_operaciones,    slides[2],  kpis, BIMESTRE)
-    _safe_slide("Slide 4",  slide4_ontime,         slides[3],  kpis, BIMESTRE)
-    _safe_slide("Slide 5",  slide5_delayed,        slides[4],  kpis, BIMESTRE)
-    _safe_slide("Slide 6",  slide6_refs_aifa,      slides[5],  kpis, BIMESTRE)
-    _safe_slide("Slide 7",  slide7_refs_veracruz,  slides[6],  kpis, BIMESTRE)
     _safe_slide("Slide 8",  slide8_motivos_tabla,  slides[7],  kpis, BIMESTRE)
     _safe_slide("Slide 9",  slide9_rectificaciones,slides[8],  kpis, BIMESTRE)
     _safe_slide("Slide 10", slide10_entrada_cruce, slides[9],  kpis, BIMESTRE)
     _safe_slide("Slide 11", slide11_facturacion,   slides[10], kpis, BIMESTRE)
-    _safe_slide("Slide 12", slide12_estado_cuenta, slides[11], kpis)
+
+    actualizar_periodo_presentacion(prs, BIMESTRE)
+    print("  ✓ Periodo actualizado en titulos/textos de toda la presentacion")
+    print("  → Omitidas desde BD: slides 4, 5, 6, 7 y 12 (se conserva la plantilla)")
 
     # ── Paso 4: Guardar ─────────────────────────────────────────
     print(f"\n[4/4] Guardando archivo...")
