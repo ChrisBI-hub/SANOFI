@@ -4,3 +4,4 @@ __pycache__/
 *.pkg
 dist/
 build/
+track_and_trace/
