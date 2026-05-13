@@ -1,6 +1,6 @@
 /* QUERY TIEMPOS DE OPERACI�N SANOFI SIN FINES DE SEMANA CON CLASIFICACI�N PRODUCTIVO/NO PRODUCTIVO */
 /* Ultima modificacion: [Fecha Actual] */
-/* Incluye clasificaci�n de mercanc�as - CORREGIDO COLLATION */
+/* Incluye clasificación de mercancías - CORREGIDO COLLATION */
 
 WITH ClasificacionMercancias AS (
 
@@ -900,7 +900,6 @@ ConsultaBase AS (
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AUBAGIO%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ADACELBOOST%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ALDURAZYME%' THEN 'PRODUCTIVO'
-
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AMARYL%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ARAVA%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%BEYFORTUS%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
@@ -916,7 +915,8 @@ ConsultaBase AS (
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE (ENOXAPARINA SODICA)%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE  (ENOXAPARINA SODICA)%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 6KIU/0.6ML INJ PS2 PRV M24 MX%' THEN 'PRODUCTIVO'
-            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 60MG/0.6ML INJ PS2%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 60MG/0.6ML INJ PS2%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 2 SOL INY%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLONAZEPAM%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLOPIDOGREL HIDROGENOSULFATO GRANULADO%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%COPLAVIX%' THEN 'PRODUCTIVO'
@@ -924,6 +924,7 @@ ConsultaBase AS (
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPIXENT%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN 50MG/10ML%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA %' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA 2BCFU%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FABRAZYME%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FLAGYL%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
@@ -949,13 +950,18 @@ ConsultaBase AS (
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%REZUROCK%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFADIN%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCINA%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCYNA%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIVAROXABAN%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SARCLISA%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SHORANT%' THEN 'PRODUCTIVO'
-            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2BCFU%' THEN 'PRODUCTIVO' --REVISAR
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2BCFU%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 4BCFU/5ML SUSP BT%' THEN 'PRODUCTIVO'
-            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SOLIQUA%' THEN 'PRODUCTIVO' --REVISAR SOLO3
-            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL (VACUNA%' THEN 'PRODUCTIVO' --REVISAR
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 1%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE S%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SOLIQUA%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL (VACUNA%' THEN 'PRODUCTIVO'
+            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL VACUNA%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STILNOX%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SUPLEMENTO VISCOELEASTI%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SYNVISC%' THEN 'PRODUCTIVO'
@@ -969,7 +975,6 @@ ConsultaBase AS (
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VAXIGRIP TETRA%' THEN 'PRODUCTIVO' --REVISAR
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VERORAB%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XATRAL OD%' THEN 'PRODUCTIVO'
-            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XENPOZYME%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ZALTRAPZIV%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%METAMIZOL SODICO%' THEN 'PRODUCTIVO'
             WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%GUAIFENESINA USP-NF-2025%' THEN 'PRODUCTIVO'
@@ -977,24 +982,33 @@ ConsultaBase AS (
             /* PATRONES PARA NO PRODUCTIVOS */
            
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%059%' THEN 'NO PRODUCTIVO'
-           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%094 TETRAVAC%' THEN 'NO PRODUCTIVO' --NO CLASIFICADO
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%094 TETRAVAC%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%095 ACT HIB%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%25 DESA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ACCESORIO PARA EQUIPOS DE APLICACION DE SOLUCIONES%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '% A/SWITZERLAND/6849/2025 (IVR-278) INFLUENZA VIRUS ANTIGEN%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ACCESORIO PARA APARATO DE USO MEDICO (FILTROS)%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ACCESORIOS PARA APARATO DE USO MEDICO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ACCESORIOS PARA TUBERIA DE PLASTICO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ACCESORIOS PARA TUBERIA DE PLASTICO%' THEN 'NO PRODUCTIVO'
-           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ÁCIDO%' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ÁCIDO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AG A/VICTORIA%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AG A/SWITZ%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%A/SWITZER%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AGUA PARA INYECCION%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AMISULPRIDE%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ALLEGRA%' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AMLITELIMAB%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AMORTIGUADOR%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APARATO DE CONTROL%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APRATO DE USO MEDICO CON ACCESORIO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APARATO PARA CALIBRACION CON ACC%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APARATO PARA CALIBRACION%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APARATO PARA LA TRANSMISION%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%APROVASC%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AROS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AS A VICTORIA%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%AS A/CROATIA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%BCGIT%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%BCG IT%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%BCG-IT%' THEN 'NO PRODUCTIVO'
@@ -1010,7 +1024,8 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DESINFECTANTE%' THEN 'NO PRODUCTIVO' --REVISAR
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DICHLORO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DISCOS DE RUPTURA%' THEN 'NO PRODUCTIVO'
-           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPILUMAB 300MG (2ML)-150%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPILUMAB 300MG%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPILUMAB 300 MG%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%EMPTY SHIPPERS (C%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%EQUIPO DE VISION%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%EQUIPO PARA%' THEN 'NO PRODUCTIVO'
@@ -1031,6 +1046,7 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HERRAJE%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HISOPOS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HOJAS PAPEL FILTRO%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HOJAS DE  PAPEL FILTRO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HORSE%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%HYDRAGEL%' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%IMPRESORA POR INYECCION DE TINTA%' THEN 'NO PRODUCTIVO'
@@ -1039,8 +1055,10 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%INHIBIDOR DE PROTEASA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%INSTRUMENTO DE ENS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%Interruptore%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%INTERRUPTOR ELECTRICO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%IRBESARTAN%' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
-           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ISATUXIMAB 500MG/25ML %' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ISATUXIMAB 500MG/25ML %' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ISATUXIMAB 500%' THEN 'NO PRODUCTIVO' --NO TIENE CLASIFICACION
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%JUNTAS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%KIT DE DIS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%KIT DE PRUEBA AGUA PARA INYECCION%' THEN 'NO PRODUCTIVO'
@@ -1055,6 +1073,7 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MANUAL EN IDIOMA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MANUFACTURAS DE PLASTICO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MANGAS %' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MANGERAS DE SILICON%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MEDIDOR DE FLUJO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MEDIOS DE CULTIVO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MEDIOSDE CULTIVO%' THEN 'NO PRODUCTIVO'
@@ -1069,6 +1088,7 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRA DE DUPILUMAB 300MG/2ML SOLUCION (150MG/ML) O PLACEBO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE AMLITELIMAB%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE AM%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE DEXAMETASONA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE DUPILUMAB%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE FREXALIMAB 1200 MG/8 ML%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%MUESTRAS DE ITE%' THEN 'NO PRODUCTIVO'
@@ -1107,29 +1127,35 @@ ConsultaBase AS (
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RECIPIENTE DE PLASTICO CON TAPA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RESISTENCIAS CALENTADORAS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RODAMIENTO DE RODILL%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SISTEMA DE DEPURACION DE AIRE POR ACCION QUIMICA  (VHP SYSTEMS) CON ACCESORIOS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SISTEMA DE PROCESAMIENTO DE  DATOS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SISTEMA PARA EL PROCESA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SISTEMA DE PROCESAMIENTO DE DATOS (ADFIRMIA CODING MACHINE) CON ACCESORIOS PARA SU INSTALACION.%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SL79.0722-10N ALFUZOSIN%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SL85.0067-00%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SL89.0160-00%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SR24726A CLOPIDOGREL%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SODIUM ACETATE AMHYDROUS%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SODIUM HY%' THEN 'NO PRODUCTIVO'
-           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL VACUNA ANTIAMARILICA ATENUADA USO HUMANO%' THEN 'NO PRODUCTIVO' --REVISAR
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SULFATO DE HIDROXI%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SUPLEMENTO ALIMENTICIO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TAPONES%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TC20/FA GAMMA RAY TREATED CAPS (SELLOS)%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TC20/FA PINK 20 (SELLOS)%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TERMOMETRO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%THYMOGLOBULINE FI%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TORNILLO%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TRANSDUCTOR DE PRESION CON ACCESORIO%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TRITON X100%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TUBO%' then 'NO PRODUCTIVO'
-           --WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TYPHOID%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%TYPHOID ANTISERUM%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%UNIDAD DE PROCESAMIENTO DE DATOS (LAPTOP)%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VACUNA VAX%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VALVULA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VALVULAE%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VIGORIMETRO%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VYF%' THEN 'NO PRODUCTIVO'
+           WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XENPOZYME%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%YF-VAX%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ZOLPIDEM TARTA%' THEN 'NO PRODUCTIVO'
            WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FILTRO DE ACEITE CON ACCESORIOS%' THEN 'NO PRODUCTIVO'
@@ -1169,7 +1195,8 @@ ConsultaBase AS (
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE (ENOXAPARINA SODICA)%' THEN 'PRODUCTIVO'
                 wHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE  (ENOXAPARINA SODICA)%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 6KIU/0.6ML INJ PS2 PRV M24 MX%' THEN 'PRODUCTIVO'
-                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 60MG/0.6ML INJ PS2%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 60MG/0.6ML INJ PS2%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 2 SOL INY%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLONAZEPAM%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLOPIDOGREL HIDROGENOSULFATO GRANULADO%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%COPLAVIX%' THEN 'PRODUCTIVO'
@@ -1177,6 +1204,7 @@ ConsultaBase AS (
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPIXENT%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN 50MG/10ML%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA 2BCFU%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FABRAZYME%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FLAGYL%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
@@ -1202,11 +1230,15 @@ ConsultaBase AS (
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%REZUROCK%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFADIN%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCINA%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCYNA%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIVAROXABAN%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SARCLISA%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SHORANT%' THEN 'PRODUCTIVO'
-                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2BCFU%' THEN 'PRODUCTIVO' --REVISAR
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2BCFU%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 4BCFU/5ML SUSP BT%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 1%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2%' THEN 'PRODUCTIVO'
+                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE S%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SOLIQUA%' THEN 'PRODUCTIVO' --REVISAR SOLO3
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL (VACUNA%' THEN 'PRODUCTIVO' --REVISAR
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL VACUNA ANTIAMARILICA ATENUADA USO HUMANO%' THEN 'PRODUCTIVO' --REVISAR
@@ -1223,7 +1255,6 @@ ConsultaBase AS (
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VAXIGRIP TETRA%' THEN 'PRODUCTIVO' --REVISAR
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VERORAB%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XATRAL OD%' THEN 'PRODUCTIVO'
-                WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XENPOZYME%' THEN 'PRODUCTIVO' --NO TIENE CLASIFICACION
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ZALTRAPZIV%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SR24726A CLOPIDOGREL%' THEN 'PRODUCTIVO'
                 WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%METAMIZOL SODICO%' THEN 'PRODUCTIVO'
@@ -1255,6 +1286,7 @@ ConsultaBase AS (
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE  (ENOXAPARINA SODICA)%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 6KIU/0.6ML INJ PS2 PRV M24 MX%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 60MG/0.6ML INJ PS2%' THEN 'GENMED'
+                    WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLEXANE 2 SOL INY%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLONAZEPAM%' THEN 'MATERIA PRIMA'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%CLOPIDOGREL HIDROGENOSULFATO GRANULADO%' THEN 'MATERIA PRIMA'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%COPLAVIX%' THEN 'GENMED'
@@ -1264,6 +1296,7 @@ ConsultaBase AS (
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPIXENT 2 SOL INY 300mg/2mL%' THEN 'Specialty Care'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ELOXATIN 50MG/10ML%' THEN 'GENMED'
+                    WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA %' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ENTEROGERMINA 2BCFU%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FABRAZYME%' THEN 'HUÉRFANOS'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%FABRAZYME 5MG/1ML INJPO VL1 2NDG M36 MX%' THEN 'GENMED'
@@ -1293,12 +1326,14 @@ ConsultaBase AS (
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%REZUROCK%' THEN 'HUÉRFANOS'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFADIN%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCINA%' THEN 'GENMED'
+                    WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIFOCYNA%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%RIVAROXABAN%' THEN 'MATERIA PRIMA'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SARCLISA%' THEN 'HUÉRFANOS'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SHORANT%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE%' THEN 'CHC'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 2BCFU%' THEN 'CHC'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE 4BCFU/5ML SUSP BT%' THEN 'CHC'
+                    WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SINUBERASE%' THEN 'CHC'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SOLIQUA%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL (VACUNA%' THEN 'VAX'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%STAMARIL VACUNA ANTIAMARILICA ATENUADA USO HUMANO%' THEN 'VAX'
@@ -1318,7 +1353,6 @@ ConsultaBase AS (
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VAXIGRIP TETRA%' THEN 'VAX'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%VERORAB%' THEN 'VAX'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XATRAL OD%' THEN 'GENMED'
-                    WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%XENPOZYME%' THEN 'HUÉRFANOS'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%ZALTRAPZIV%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%DUPIXENT%' THEN 'GENMED'
                     WHEN COALESCE(MERC.MercanciaFinal, main.Mercancía) LIKE '%SR24726A CLOPIDOGREL%' THEN 'MATERIA PRIMA'
@@ -1390,10 +1424,11 @@ ConsultaBase AS (
     LEFT JOIN ClasificacionMercancias cm ON COALESCE(MERC.MercanciaFinal, main.Mercancía) COLLATE SQL_Latin1_General_CP1_CI_AS = cm.[DESCRIPCIÓN_PRODUCTO]
 
     WHERE 
-        (Cliente IN ('SANOFI PASTEUR, S.A DE C.V.','AZTECA VACUNAS, SA DE CV')
+        --(Cliente IN ('SANOFI PASTEUR, S.A DE C.V.','AZTECA VACUNAS, SA DE CV')
+        (Cliente IN ('AZTECA VACUNAS, SA DE CV')
         OR (Cliente LIKE '%AVENTIS%' AND [EJE UNIDAD DE NEGOCIO] LIKE'GENMED%'))
-        --AND [Tipo Operación Desc] = 'Importación'
-        --and [Clave Pedimento]  like 'R%'
+        AND [Tipo Operación Desc] = 'Importación'
+        and [Clave Pedimento] not like 'R%'
 )
 
 SELECT *
@@ -1405,8 +1440,9 @@ WHERE --"CLASIFICACIÓN DE MERCANCIA" IN ('PRODUCTIVO') --('PRODUCTIVO','SIN CLA
              TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-03-01'
              AND TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) <= '2026-04-30')
 --[MOTIVO DE RETRASO COMPLETO] not like 'NULL'
---AND --"FAMILIA" in ('SIN FAMILIA','PRODUCTIVO')
---[Referencia] in (
---'26-000905')
+AND --"FAMILIA" in ('26-001429','26-001974')
+[Referencia] not like '26-001429'
+and 
+[Referencia] not like '26-001974'
  
-ORDER BY [ Fecha de Pago] DESC;
+ORDER BY [Cliente] DESC;

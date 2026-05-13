@@ -1352,14 +1352,14 @@ ConsultaBase AS (
     WHERE 
         (Cliente IN ('SANOFI PASTEUR, S.A DE C.V.','AZTECA VACUNAS, SA DE CV')
         OR (Cliente LIKE '%AVENTIS%' AND [EJE UNIDAD DE NEGOCIO] LIKE'GENMED%'))
-        AND [Tipo Operación Desc] = 'Importación'
+        --AND [Tipo Operación Desc] = 'Importación'
         --and [Clave Pedimento]  like 'R%'
 )
 
 SELECT *
 FROM ConsultaBase
-WHERE "CLASIFICACIÓN DE MERCANCIA" IN ('PRODUCTIVO','SIN CLASIFICACION') --('PRODUCTIVO','SIN CLASIFICACION')
-   AND 
+WHERE --"CLASIFICACIÓN DE MERCANCIA" IN ('PRODUCTIVO','SIN CLASIFICACION') --('PRODUCTIVO','SIN CLASIFICACION')
+   --AND 
    (
     -- Convertir el campo unificado de vuelta a DATE para la comparación
              TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-03-01'
