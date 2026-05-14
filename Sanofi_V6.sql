@@ -262,197 +262,97 @@ ConsultaBase AS (
         [Fecha primera Selección],
 
         -- Entrada a Cruce (días hábiles)
-        (
-            DATEDIFF(DAY,
-                TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                TRY_CAST(
-                    CASE
-                        WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                        ELSE [Fecha primera Selección]
-                    END AS DATE
+        CASE
+            WHEN TRY_CAST([Fecha Entrada/Presentación] AS DATE) IS NULL
+                 OR TRY_CAST([Fecha primera Selección] AS DATE) IS NULL THEN NULL
+            WHEN TRY_CAST([Fecha primera Selección] AS DATE) < TRY_CAST([Fecha Entrada/Presentación] AS DATE) THEN 0
+            ELSE (
+                DATEDIFF(DAY,
+                    TRY_CAST([Fecha Entrada/Presentación] AS DATE),
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 )
-            ) + 1
-            - (DATEDIFF(WEEK,
-                TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                TRY_CAST(
-                    CASE
-                        WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                        ELSE [Fecha primera Selección]
-                    END AS DATE
-                )
-            ) * 2)
-            - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-            - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                    CASE
-                        WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                        ELSE [Fecha primera Selección]
-                    END AS DATE
-                )) = 'Sábado' THEN 1 ELSE 0 END)
-        ) AS [Entrada a Cruce],
+                - (DATEDIFF(WEEK,
+                    TRY_CAST([Fecha Entrada/Presentación] AS DATE),
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                ) * 2)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
+            )
+        END AS [Entrada a Cruce],
 
         /*------------------------------ Etiqueta Entrada a Cruce -----------------------------*/
         CASE
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) BETWEEN 0 AND 1 THEN '1 día o menos'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) BETWEEN 2 AND 3 THEN '2 a 3 días'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) BETWEEN 4 AND 5 THEN '4 a 5 días'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) BETWEEN 6 AND 10 THEN '6 a 10 días'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) BETWEEN 11 AND 15 THEN '11 a 15 días'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
-                ) + 1
+                    TRY_CAST([Fecha primera Selección] AS DATE)
+                )
                 - (DATEDIFF(WEEK,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
-                    TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )
+                    TRY_CAST([Fecha primera Selección] AS DATE)
                 ) * 2)
                 - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha Entrada/Presentación] AS DATE)) = 'Domingo' THEN 1 ELSE 0 END)
-                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(
-                        CASE
-                            WHEN Sucursal = 'CORRESPONSALIAS' THEN [Fecha Entrada/Presentación]
-                            ELSE [Fecha primera Selección]
-                        END AS DATE
-                    )) = 'Sábado' THEN 1 ELSE 0 END)
+                - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Fecha primera Selección] AS DATE)) = 'Sábado' THEN 1 ELSE 0 END)
             ) > 15 THEN '16 o más días'
             ELSE 'SIN DATO'
         END AS [Etiqueta entrada a Cruce],
@@ -692,7 +592,7 @@ ConsultaBase AS (
                         ) * 2)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(SUBSTRING([Fecha Entrada/Presentación], 1, 10) AS DATE)) = 'Sunday' THEN 1 ELSE 0 END)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CONVERT(DATE, [Fechas de Cuentas de Gastos])) = 'Saturday' THEN 1 ELSE 0 END)
-                    ) BETWEEN 2 AND 3 THEN '2 a 3 d�as'
+                    ) BETWEEN 2 AND 3 THEN '2 a 3 días'
                     WHEN (
                         DATEDIFF(DAY,
                             TRY_CAST(SUBSTRING([Fecha Entrada/Presentación], 1, 10) AS DATE),
@@ -704,7 +604,7 @@ ConsultaBase AS (
                         ) * 2)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(SUBSTRING([Fecha Entrada/Presentación], 1, 10) AS DATE)) = 'Sunday' THEN 1 ELSE 0 END)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CONVERT(DATE, [Fechas de Cuentas de Gastos])) = 'Saturday' THEN 1 ELSE 0 END)
-                    ) BETWEEN 4 AND 5 THEN '4 a 5 d�as'
+                    ) BETWEEN 4 AND 5 THEN '4 a 5 días'
                     WHEN (
                         DATEDIFF(DAY,
                             TRY_CAST(SUBSTRING([Fecha Entrada/Presentación], 1, 10) AS DATE),
@@ -740,7 +640,7 @@ ConsultaBase AS (
                         ) * 2)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST(SUBSTRING([Fecha Entrada/Presentación], 1, 10) AS DATE)) = 'Sunday' THEN 1 ELSE 0 END)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CONVERT(DATE, [Fechas de Cuentas de Gastos])) = 'Saturday' THEN 1 ELSE 0 END)
-                    ) > 15 THEN 'más de 16 d�as'
+                    ) > 15 THEN 'más de 16 días'
                     ELSE 'SIN DATO'
                 END
         END AS 'Etiqueta Entrada a Factura',
@@ -839,7 +739,7 @@ ConsultaBase AS (
                         ) * 2)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CAST([Pedimento Fecha Pago] AS DATE)) = 'Sunday' THEN 1 ELSE 0 END)
                         - (CASE WHEN DATENAME(WEEKDAY, TRY_CONVERT(DATE, [Fecha primera Selección])) = 'Saturday' THEN 1 ELSE 0 END)
-                    ) > 15 THEN 'm�s de 16 días'
+                    ) > 15 THEN 'más de 16 días'
                     ELSE 'SIN DATO'
                 END
         END AS 'Etiqueta Pago Pedimento a Cruce',
@@ -952,17 +852,17 @@ ConsultaBase AS (
             )
         END AS "TIEMPO DE FACTURACION" ,
 
-        /*------------------------------ Etiqueta d�as entre entrega y facturaci�n (naturales) -----------------------------*/
+        /*------------------------------ Etiqueta días entre entrega y facturación (naturales) -----------------------------*/
         CASE
             WHEN LEFT([FECHA ENTREGA DE  MERCANCIA],10) IS NULL OR TRIM(LEFT([FECHA ENTREGA DE  MERCANCIA],10)) = '' THEN 'SIN DATO'
             ELSE
                 CASE
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 0 AND 1 THEN '1 d�a o menos'
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 2 AND 3 THEN '2 a 3 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 4 AND 5 THEN '4 a 5 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 6 AND 10 THEN '6 a 10 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 11 AND 15 THEN '11 a 15 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) > 15 THEN 'm�s de 16 d�as'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 0 AND 1 THEN '1 día o menos'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 2 AND 3 THEN '2 a 3 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 4 AND 5 THEN '4 a 5 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 6 AND 10 THEN '6 a 10 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) BETWEEN 11 AND 15 THEN '11 a 15 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE), TRY_CAST(CuentaG_FechaFactura AS DATE)) > 15 THEN 'más de 16 días'
                     ELSE 'SIN DATO'
                 END
         END AS "ETIQUETA ENTREGA A FACTURA",
@@ -997,7 +897,7 @@ ConsultaBase AS (
                 END
         END AS Comparacion,
 
-        /*------------------------------ Campos de clasificaci�n -----------------------------*/
+        /*------------------------------ Campos de clasificación -----------------------------*/
         [Clave Pedimento],
         Ejecutivo_ABC,
         [Guia Master],
@@ -1005,7 +905,7 @@ ConsultaBase AS (
         [Tipo Operación Desc],
         COALESCE(MERC.MercanciaFinal, main.Mercancía) AS Mercancía,
         CASE 
-            --WHEN main.Mercanc�a IN (
+            --WHEN main.Mercancía IN (
             --    'INSULINA GLARGINA MAL ESCRITA',
             --    'VACUNA INFLUENZA MAL ESCRITA',
             --    'HEPARINA SODICA MAL ESCRITA',
@@ -1570,5 +1470,5 @@ and
 [Referencia] not like '26-001974'
 and
 [Referencia] not like 'PASTEUR_PRUEBAMVE'
-and [Referencia] in ('26-002219')
+and [Referencia] in ('MNSI262347','MNSI261767')
 ORDER BY [Sucursal]
