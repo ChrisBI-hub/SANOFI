@@ -930,10 +930,25 @@ ConsultaBase AS (
                  OR TRY_CAST(LEFT([FAC RECEPCION EXP. A FACTURACION],10) AS DATE) IS NULL
                  OR TRY_CAST([Fechas de Cuentas de Gastos] AS DATE) IS NULL
                 THEN NULL
-            ELSE DATEDIFF(
-                DAY,
-                TRY_CAST(LEFT([FAC RECEPCION EXP. A FACTURACION],10) AS DATE),
-                TRY_CAST([Fechas de Cuentas de Gastos] AS DATE)
+            ELSE (
+                DATEDIFF(
+                    DAY,
+                    TRY_CAST(LEFT([FAC RECEPCION EXP. A FACTURACION],10) AS DATE),
+                    TRY_CAST([Fechas de Cuentas de Gastos] AS DATE)
+                ) + 1
+                - (DATEDIFF(
+                    WEEK,
+                    TRY_CAST(LEFT([FAC RECEPCION EXP. A FACTURACION],10) AS DATE),
+                    TRY_CAST([Fechas de Cuentas de Gastos] AS DATE)
+                ) * 2)
+                - (CASE
+                    WHEN DATENAME(WEEKDAY, TRY_CAST(LEFT([FAC RECEPCION EXP. A FACTURACION],10) AS DATE)) = 'Domingo' THEN 1
+                    ELSE 0
+                END)
+                - (CASE
+                    WHEN DATENAME(WEEKDAY, TRY_CAST([Fechas de Cuentas de Gastos] AS DATE)) = 'Sábado' THEN 1
+                    ELSE 0
+                END)
             )
         END AS "TIEMPO DE FACTURACION" ,
 
@@ -1555,5 +1570,5 @@ and
 [Referencia] not like '26-001974'
 and
 [Referencia] not like 'PASTEUR_PRUEBAMVE'
---and [Referencia] in ('MNSI262347', 'MNSI261767')
+and [Referencia] in ('26-002219')
 ORDER BY [Sucursal]
