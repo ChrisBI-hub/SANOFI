@@ -1,4 +1,4 @@
-/* QUERY TIEMPOS DE OPERACI�N SANOFI SIN FINES DE SEMANA CON CLASIFICACI�N PRODUCTIVO/NO PRODUCTIVO */
+/* QUERY TIEMPOS DE OPERACIÓN SANOFI SIN FINES DE SEMANA CON CLASIFICACI�N PRODUCTIVO/NO PRODUCTIVO */
 /* Ultima modificacion: [14/05/2026] */
 /* Incluye clasificación de mercancías - CORREGIDO COLLATION */
 
@@ -194,7 +194,7 @@ ConsultaBase AS (
                             ELSE [ Fecha de Pago]
                         END AS DATE
                     )) = 'Sábado' THEN 1 ELSE 0 END)
-            ) BETWEEN 4 AND 5 THEN '4 a 5 d�as'
+            ) BETWEEN 4 AND 5 THEN '4 a 5 días'
             WHEN (
                 DATEDIFF(DAY,
                     TRY_CAST([Fecha Entrada/Presentación] AS DATE),
@@ -254,7 +254,7 @@ ConsultaBase AS (
                             ELSE [ Fecha de Pago]
                         END AS DATE
                     )) = 'Sábado' THEN 1 ELSE 0 END)
-            ) BETWEEN 11 AND 15 THEN '11 a 15 d�as'
+            ) BETWEEN 11 AND 15 THEN '11 a 15 días'
             ELSE '16 o más días'
         END AS [Etiqueta Entrada a Pago],
 
@@ -767,12 +767,12 @@ ConsultaBase AS (
             WHEN LEFT([FECHA ENTREGA DE  MERCANCIA],10) IS NULL OR TRIM(LEFT([FECHA ENTREGA DE  MERCANCIA],10)) = '' THEN 'SIN DATO'
             ELSE
                 CASE
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 0 AND 1 THEN '1 d�a o menos'
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 2 AND 3 THEN '2 a 3 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 4 AND 5 THEN '4 a 5 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 6 AND 10 THEN '6 a 10 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 11 AND 15 THEN '11 a 15 d�as'
-                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) > 15 THEN 'm�s de 16 d�as'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 0 AND 1 THEN '1 día o menos'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 2 AND 3 THEN '2 a 3 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 4 AND 5 THEN '4 a 5 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 6 AND 10 THEN '6 a 10 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) BETWEEN 11 AND 15 THEN '11 a 15 días'
+                    WHEN DATEDIFF(DAY, TRY_CAST([Fecha primera Selección] AS DATE), TRY_CAST(LEFT([FECHA ENTREGA DE  MERCANCIA],10) AS DATE)) > 15 THEN 'más de 16 días'
                     ELSE 'Sin dato'
                 END
         END AS "ETIQUETA CRUCE A ENTREGA",
@@ -1470,5 +1470,5 @@ and
 [Referencia] not like '26-001974'
 and
 [Referencia] not like 'PASTEUR_PRUEBAMVE'
-and [Referencia] in ('MNSI262347','MNSI261767')
-ORDER BY [Sucursal]
+--and [Referencia] in ('MNSI262347','MNSI261767')
+ORDER BY [MES]
