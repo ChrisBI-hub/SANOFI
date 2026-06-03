@@ -1448,27 +1448,21 @@ ConsultaBase AS (
     LEFT JOIN ClasificacionMercancias cm ON COALESCE(MERC.MercanciaFinal, main.Mercancía) COLLATE SQL_Latin1_General_CP1_CI_AS = cm.[DESCRIPCIÓN_PRODUCTO]
 
     WHERE 
-        (Cliente IN ('SANOFI PASTEUR, S.A DE C.V.','AZTECA VACUNAS, SA DE CV')
+        (Cliente like '%AVENTIS%')
         --(Cliente IN ('AZTECA VACUNAS, SA DE CV')
-        OR (Cliente LIKE '%AVENTIS%' AND [EJE UNIDAD DE NEGOCIO] LIKE'GENMED%'))
-        AND [Tipo Operación Desc] = 'Importación'
-        and [Clave Pedimento] not like 'R%'
+        --OR (Cliente LIKE '%AVENTIS%' AND [EJE UNIDAD DE NEGOCIO] LIKE'GENMED%'))
+        --AND [Tipo Operación Desc] = 'Importación'
+        --and [Clave Pedimento] not like 'R%'
 )
 
 SELECT *
 FROM ConsultaBase
-WHERE "CLASIFICACIÓN DE MERCANCIA" IN ('PRODUCTIVO') --('PRODUCTIVO','SIN CLASIFICACION')
-   AND 
+WHERE --"CLASIFICACIÓN DE MERCANCIA" IN ('PRODUCTIVO') --('PRODUCTIVO','SIN CLASIFICACION')
+   --AND 
    (
     -- Convertir el campo unificado de vuelta a DATE para la comparación
-             TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-03-01'
-             AND TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) <= '2026-04-30')
+             TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-05-01'
+             AND TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) <= '2026-05-31')
 --[MOTIVO DE RETRASO COMPLETO] not like 'NULL'
-AND --"FAMILIA" in ('26-001429','26-001974')
-[Referencia] not like '26-001429'
-and 
-[Referencia] not like '26-001974'
-and
-[Referencia] not like 'PASTEUR_PRUEBAMVE'
---and [Referencia] in ('MNSI262347','MNSI261767')
+
 ORDER BY [MES]
