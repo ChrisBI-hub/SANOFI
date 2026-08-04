@@ -162,6 +162,21 @@ def estado_enviado(state: dict, year: int, month: int) -> bool:
     return state.get("reports", {}).get(periodo_key(year, month), {}).get("status") == "sent"
 
 
+def confirmar_envio_anticipado(periodo: str) -> bool:
+    while True:
+        respuesta = input(
+            f"Aun no toca enviar el reporte de {periodo}.\n"
+            "¿Desea enviarlo de forma anticipada? (S/N): "
+        ).strip().upper()
+
+        if respuesta in {"S", "SI"}:
+            return True
+        if respuesta in {"N", "NO"}:
+            return False
+
+        print("Respuesta invalida. Escriba S, SI, N o NO.")
+
+
 def cargar_configuracion_gmail() -> dict:
     if not GMAIL_CREDENTIALS_FILE.exists():
         raise FileNotFoundError(
@@ -601,6 +616,7 @@ def procesar_periodo(year: int, month: int, state: dict) -> Path:
     )
 
     enviar_correo_gmail(output_path, subject, body)
+    print(f"Correo enviado correctamente a: {', '.join(GMAIL_RECIPIENTS)}")
     marcar_estado(
         state,
         year,
@@ -622,8 +638,10 @@ def ejecutar_envio_pendiente(now: datetime | None = None) -> None:
     state = cargar_estado()
 
     if now < due_dt:
-        print(f"Aun no toca enviar el reporte de {formatear_periodo(target_year, target_month)}.")
-        return
+        periodo = formatear_periodo(target_year, target_month)
+        if not confirmar_envio_anticipado(periodo):
+            print(f"Aun no toca enviar el reporte de {periodo}.")
+            return
 
     if estado_enviado(state, target_year, target_month):
         print(f"Ya fue enviado el reporte de {formatear_periodo(target_year, target_month)}.")
