@@ -38,10 +38,14 @@ SHEET_IMPORT = "Cont PT IMP"
 SHEET_EXPORT = "Cont PT EXP"
 
 GMAIL_RECIPIENTS = [
-    "gerencia.ver@abcsc.mx",
+    #"gerencia.ver@abcsc.mx",
     "sgonzalez@abcsc.mx",
-    "ymontoya@abcsc.mx",
-    "apalacios@abcsc.mx",
+    "jperez@abcsc.mx",
+    "myanez@abcsc.mx",
+    "ccarbajal@abcsc.mx",
+    "ssalguero@abcsc.mx",
+    "imedrano@abcsc.mx",
+    #"apalacios@abcsc.mx",
 ]
 GMAIL_FROM = "reportes.bi@abcsc.mx"
 GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.send"
@@ -566,7 +570,7 @@ def guardar_excel(df: pd.DataFrame, output_path: Path, sheet_all_name: str) -> P
     return output_path
 
 
-def enviar_correo_gmail(archivo: Path, subject: str, body: str) -> None:
+def enviar_correo_gmail(archivo: Path, subject: str, body: str) -> dict:
     token_data = obtener_access_token()
 
     mensaje = EmailMessage()
@@ -595,34 +599,57 @@ def enviar_correo_gmail(archivo: Path, subject: str, body: str) -> None:
         method="POST",
     )
     with urllib.request.urlopen(req, timeout=60) as resp:
-        json.loads(resp.read().decode("utf-8"))
+        respuesta = json.loads(resp.read().decode("utf-8"))
+
+    if not respuesta.get("id"):
+        raise RuntimeError(f"Gmail no regreso id de mensaje. Respuesta: {respuesta}")
+
+    return respuesta
 
 
-def procesar_periodo(year: int, month: int, state: dict) -> Path:
+def procesar_periodo(
+    year: int,
+    month: int,
+    state: dict,
+    solicitud: bool = False,
+    fecha_fin_override: datetime | None = None,
+) -> Path:
     fecha_ini = primer_dia_mes(year, month).strftime("%Y-%m-%d")
-    fecha_fin = ultimo_dia_mes(year, month).strftime("%Y-%m-%d")
+    fecha_fin_dt = fecha_fin_override or ultimo_dia_mes(year, month)
+    fecha_fin = fecha_fin_dt.strftime("%Y-%m-%d")
     periodo = formatear_periodo(year, month)
-    output_path = OUTPUT_DIR / f"Aventis_{year}_{month:02d}.xlsx"
+    if solicitud:
+        output_path = OUTPUT_DIR / f"Aventis_{year}_{month:02d}_solicitud_{fecha_fin}.xlsx"
+    else:
+        output_path = OUTPUT_DIR / f"Aventis_{year}_{month:02d}.xlsx"
     sheet_all_name = f"Lay out {periodo}"
 
     df = obtener_datos(fecha_ini, fecha_fin)
     guardar_excel(df, output_path, sheet_all_name)
 
     subject = f"Aventis - {periodo}"
+    if solicitud:
+        subject = f"{subject} - Solicitud extraordinaria al {fecha_fin}"
+
     body = (
         f"Adjunto el archivo de Aventis correspondiente a {periodo}.\n\n"
         f"Periodo analizado: {fecha_ini} a {fecha_fin}\n"
         f"Archivo generado: {output_path.name}\n"
     )
 
-    enviar_correo_gmail(output_path, subject, body)
-    print(f"Correo enviado correctamente a: {', '.join(GMAIL_RECIPIENTS)}")
+    respuesta_gmail = enviar_correo_gmail(output_path, subject, body)
+    print(
+        "Correo aceptado por Gmail "
+        f"(message_id: {respuesta_gmail['id']}) para: {', '.join(GMAIL_RECIPIENTS)}"
+    )
     marcar_estado(
         state,
         year,
         month,
-        status="sent",
+        status="request_sent" if solicitud else "sent",
         sent_at=datetime.now().isoformat(timespec="seconds"),
+        gmail_message_id=respuesta_gmail["id"],
+        solicitud_extraordinaria=solicitud,
         subject=subject,
         file=str(output_path),
         sheet_all=sheet_all_name,
@@ -631,25 +658,54 @@ def procesar_periodo(year: int, month: int, state: dict) -> Path:
     return output_path
 
 
-def ejecutar_envio_pendiente(now: datetime | None = None) -> None:
+def ejecutar_envio_pendiente(
+    now: datetime | None = None,
+    force: bool = False,
+    solicitud: bool = False,
+) -> None:
     now = now or datetime.now()
-    target_year, target_month = periodo_anterior(now)
+    if solicitud:
+        target_year, target_month = now.year, now.month
+        fecha_fin_override = now
+    else:
+        target_year, target_month = periodo_anterior(now)
+        fecha_fin_override = None
+
     due_dt = period_due_datetime(target_year, target_month)
     state = cargar_estado()
 
-    if now < due_dt:
+    if now < due_dt and not solicitud:
         periodo = formatear_periodo(target_year, target_month)
         if not confirmar_envio_anticipado(periodo):
             print(f"Aun no toca enviar el reporte de {periodo}.")
             return
 
-    if estado_enviado(state, target_year, target_month):
-        print(f"Ya fue enviado el reporte de {formatear_periodo(target_year, target_month)}.")
+    reenvio_permitido = force or solicitud
+
+    if estado_enviado(state, target_year, target_month) and not reenvio_permitido:
+        print(
+            f"Ya fue enviado el reporte de {formatear_periodo(target_year, target_month)}. "
+            "No se envio otro correo. Usa --solicitud para envio extraordinario "
+            "o --force para reenviarlo."
+        )
         return
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     try:
-        archivo = procesar_periodo(target_year, target_month, state)
+        if solicitud:
+            print(
+                "Envio extraordinario solicitado para "
+                f"{formatear_periodo(target_year, target_month)} "
+                f"del {primer_dia_mes(target_year, target_month).strftime('%Y-%m-%d')} "
+                f"al {fecha_fin_override.strftime('%Y-%m-%d')}."
+            )
+        archivo = procesar_periodo(
+            target_year,
+            target_month,
+            state,
+            solicitud=solicitud,
+            fecha_fin_override=fecha_fin_override,
+        )
         print(f"Archivo generado y enviado: {archivo}")
     except Exception as exc:
         marcar_estado(
@@ -671,18 +727,28 @@ def main() -> None:
         action="store_true",
         help="Mantiene el proceso activo y reintenta cada cierto tiempo.",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Reenvia el periodo aunque aventis_state.json ya lo marque como enviado.",
+    )
+    parser.add_argument(
+        "--solicitud",
+        action="store_true",
+        help="Envia el reporte por solicitud extraordinaria aunque ya figure como enviado.",
+    )
     args = parser.parse_args()
 
     try:
         if args.watch:
             while True:
                 try:
-                    ejecutar_envio_pendiente()
+                    ejecutar_envio_pendiente(force=args.force, solicitud=args.solicitud)
                 except Exception as exc:
                     print(f"Fallo el envio: {exc}")
                 time.sleep(DAEMON_SLEEP_SECONDS)
         else:
-            ejecutar_envio_pendiente()
+            ejecutar_envio_pendiente(force=args.force, solicitud=args.solicitud)
     except ModuleNotFoundError as exc:
         if exc.name == "pyodbc":
             raise SystemExit(
