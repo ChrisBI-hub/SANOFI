@@ -38,14 +38,14 @@ SHEET_IMPORT = "Cont PT IMP"
 SHEET_EXPORT = "Cont PT EXP"
 
 GMAIL_RECIPIENTS = [
-    #"gerencia.ver@abcsc.mx",
+    "gerencia.ver@abcsc.mx",
     "sgonzalez@abcsc.mx",
     "jperez@abcsc.mx",
     "myanez@abcsc.mx",
     "ccarbajal@abcsc.mx",
     "ssalguero@abcsc.mx",
     "imedrano@abcsc.mx",
-    #"apalacios@abcsc.mx",
+    "apalacios@abcsc.mx",
 ]
 GMAIL_FROM = "reportes.bi@abcsc.mx"
 GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.send"
