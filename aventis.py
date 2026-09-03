@@ -50,8 +50,8 @@ GMAIL_RECIPIENTS = [
 GMAIL_FROM = "reportes.bi@abcsc.mx"
 GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.send"
 
-SEND_DAY = 3
-SEND_HOUR = 10
+SEND_DAY = 1
+SEND_HOUR = 0
 SEND_MINUTE = 0
 DAEMON_SLEEP_SECONDS = 900
 
