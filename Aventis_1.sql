@@ -213,6 +213,6 @@ SELECT
     END AS [PECE]
 FROM ConsultaBase
 WHERE 
-     TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-05-01'
-     AND TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) <= '2026-05-31'
+     TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) >= '2026-08-01'
+     AND TRY_CONVERT(DATE, [Fecha de Pago funcion], 103) <= '2026-08-31'
 ORDER BY [Sucursal];
