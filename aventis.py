@@ -50,8 +50,8 @@ GMAIL_RECIPIENTS = [
 GMAIL_FROM = "reportes.bi@abcsc.mx"
 GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.send"
 
-SEND_DAY = 3
-SEND_HOUR = 10
+SEND_DAY = 1
+SEND_HOUR = 0
 SEND_MINUTE = 0
 DAEMON_SLEEP_SECONDS = 900
 
@@ -417,6 +417,15 @@ def filtrar_tipo_operacion(df: pd.DataFrame, texto: str) -> pd.DataFrame:
     return df[serie.str.contains(texto.lower(), na=False)].copy()
 
 
+def filtrar_con_contenedor(df: pd.DataFrame) -> pd.DataFrame:
+    columna = "QTY Contenedor"
+    if columna not in df.columns:
+        raise KeyError(f"No existe la columna requerida: {columna}")
+
+    qty = pd.to_numeric(df[columna], errors="coerce").fillna(0)
+    return df[qty > 0].copy()
+
+
 def descomponer_total_bultos(df: pd.DataFrame) -> pd.DataFrame:
     faltantes = [col for col in EXPORT_COLUMNS if col not in df.columns]
     if faltantes:
@@ -559,8 +568,12 @@ def preparar_hoja_contable(df: pd.DataFrame) -> pd.DataFrame:
 
 def guardar_excel(df: pd.DataFrame, output_path: Path, sheet_all_name: str) -> Path:
     df_general = preparar_hoja_general(df, sheet_all_name)
-    df_import = preparar_hoja_contable(filtrar_tipo_operacion(df, "Importación"))
-    df_export = preparar_hoja_contable(filtrar_tipo_operacion(df, "Exportación"))
+    df_import = preparar_hoja_contable(
+        filtrar_con_contenedor(filtrar_tipo_operacion(df, "Importación"))
+    )
+    df_export = preparar_hoja_contable(
+        filtrar_con_contenedor(filtrar_tipo_operacion(df, "Exportación"))
+    )
 
     with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
         df_general.to_excel(writer, sheet_name=sheet_all_name[:31], index=False)
