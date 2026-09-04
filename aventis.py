@@ -627,6 +627,7 @@ def procesar_periodo(
     solicitud: bool = False,
     fecha_fin_override: datetime | None = None,
 ) -> Path:
+    inicio = time.perf_counter()
     fecha_ini = primer_dia_mes(year, month).strftime("%Y-%m-%d")
     fecha_fin_dt = fecha_fin_override or ultimo_dia_mes(year, month)
     fecha_fin = fecha_fin_dt.strftime("%Y-%m-%d")
@@ -651,9 +652,11 @@ def procesar_periodo(
     )
 
     respuesta_gmail = enviar_correo_gmail(output_path, subject, body)
+    duracion_segundos = round(time.perf_counter() - inicio, 1)
     print(
         "Correo aceptado por Gmail "
-        f"(message_id: {respuesta_gmail['id']}) para: {', '.join(GMAIL_RECIPIENTS)}"
+        f"(message_id: {respuesta_gmail['id']}) para: {', '.join(GMAIL_RECIPIENTS)} "
+        f"(tiempo de envio: {duracion_segundos} s)"
     )
     marcar_estado(
         state,
@@ -661,6 +664,7 @@ def procesar_periodo(
         month,
         status="request_sent" if solicitud else "sent",
         sent_at=datetime.now().isoformat(timespec="seconds"),
+        duracion_segundos=duracion_segundos,
         gmail_message_id=respuesta_gmail["id"],
         solicitud_extraordinaria=solicitud,
         subject=subject,
