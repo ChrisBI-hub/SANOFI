@@ -197,8 +197,8 @@ ConsultaBase AS (
     /* JOIN para clasificación de mercancías CON COLLATION CORREGIDO */
     LEFT JOIN ClasificacionMercancias cm ON COALESCE(MERC.MercanciaFinal, main.Mercancía) COLLATE SQL_Latin1_General_CP1_CI_AS = cm.[DESCRIPCIÓN_PRODUCTO]
 
-    WHERE 
-         ((Cliente LIKE '%AVENTIS%' AND [EJE UNIDAD DE NEGOCIO] LIKE'CHC%'))
+    WHERE
+         ((Cliente LIKE '%AVENTIS%' AND ([EJE UNIDAD DE NEGOCIO] LIKE 'CHC%' OR [EJE UNIDAD DE NEGOCIO] LIKE 'GENMED%')))
         --AND [Tipo Operación Desc] = 'Importación'
         --and [Clave Pedimento] not like 'R%'
 )
