@@ -549,6 +549,7 @@ def preparar_hoja_contable(df: pd.DataFrame) -> pd.DataFrame:
     salida = descomponer_total_bultos(df)
     columnas = [
         "Pedimento Original A1",
+        "Pedimento R1",
         "Tipo Operación Desc",
         "Clave Pedimento",
         "Contenedores",
